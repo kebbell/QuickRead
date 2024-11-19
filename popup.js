@@ -1,32 +1,65 @@
-// Select elements
-const summarizeBtn = document.getElementById('summarizeBtn');
-const inputText = document.getElementById('inputText');
-const summaryText = document.getElementById('summaryText');
+// Select Save, Copy, and Share buttons
+const saveBtn = document.getElementById('saveBtn');
+const copyBtn = document.getElementById('copyBtn');
+const shareBtn = document.getElementById('shareBtn');
 
-// Summarize text on button click
-summarizeBtn.addEventListener('click', async () => {
-  const textToSummarize = inputText.value;
+// Save the summary
+saveBtn.addEventListener('click', () => {
+  const summary = summaryText.innerText;
 
-  // Check if input is valid
-  if (!textToSummarize.trim()) {
-    alert('Please enter some text or a URL to summarize.');
+  if (!summary || summary === 'No summary available.') {
+    alert('No summary to save!');
+    return;
+  }
+
+  const blob = new Blob([summary], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'summary.txt';
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+// Copy the summary to clipboard
+copyBtn.addEventListener('click', async () => {
+  const summary = summaryText.innerText;
+
+  if (!summary || summary === 'No summary available.') {
+    alert('No summary to copy!');
     return;
   }
 
   try {
-    // Call Chrome's built-in Summarization API
-    const response = await chrome.ai.summarization.summarize({
-      text: textToSummarize
-    });
+    await navigator.clipboard.writeText(summary);
+    alert('Summary copied to clipboard!');
+  } catch (err) {
+    console.error('Error copying summary:', err);
+    alert('Failed to copy summary.');
+  }
+});
 
-    // Display the summary
-    if (response && response.summary) {
-      summaryText.innerText = response.summary;
-    } else {
-      summaryText.innerText = 'No summary available. Try a different input.';
+// Share the summary
+shareBtn.addEventListener('click', async () => {
+  const summary = summaryText.innerText;
+
+  if (!summary || summary === 'No summary available.') {
+    alert('No summary to share!');
+    return;
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'QuickRead Summary',
+        text: summary,
+      });
+      alert('Summary shared successfully!');
+    } catch (err) {
+      console.error('Error sharing summary:', err);
+      alert('Failed to share summary.');
     }
-  } catch (error) {
-    console.error('Error during summarization:', error);
-    summaryText.innerText = 'Something went wrong. Please try again.';
+  } else {
+    alert('Sharing not supported on this device.');
   }
 });
