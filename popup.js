@@ -1,12 +1,26 @@
-// Select Save, Copy, and Share buttons
+// Select elements
+const summarizeBtn = document.getElementById('summarizeBtn');
+const inputText = document.getElementById('inputText');
+const summaryText = document.getElementById('summaryText');
 const saveBtn = document.getElementById('saveBtn');
 const copyBtn = document.getElementById('copyBtn');
 const shareBtn = document.getElementById('shareBtn');
 
+// Mock summarization logic
+summarizeBtn.addEventListener('click', () => {
+  const text = inputText.value.trim();
+  if (!text) {
+    summaryText.innerText = "Please enter text or URL to summarize.";
+    return;
+  }
+
+  // Simulate summarization (replace with Summarization API later)
+  summaryText.innerText = `Summary: ${text.substring(0, 100)}...`;
+});
+
 // Save the summary
 saveBtn.addEventListener('click', () => {
   const summary = summaryText.innerText;
-
   if (!summary || summary === 'No summary available.') {
     alert('No summary to save!');
     return;
@@ -24,7 +38,6 @@ saveBtn.addEventListener('click', () => {
 // Copy the summary to clipboard
 copyBtn.addEventListener('click', async () => {
   const summary = summaryText.innerText;
-
   if (!summary || summary === 'No summary available.') {
     alert('No summary to copy!');
     return;
@@ -42,7 +55,6 @@ copyBtn.addEventListener('click', async () => {
 // Share the summary
 shareBtn.addEventListener('click', async () => {
   const summary = summaryText.innerText;
-
   if (!summary || summary === 'No summary available.') {
     alert('No summary to share!');
     return;
