@@ -75,3 +75,6 @@ shareBtn.addEventListener('click', async () => {
     alert('Sharing not supported on this device.');
   }
 });
+
+
+
